@@ -6,9 +6,23 @@ export default function TimerControl(props) {
         <div className="control-bar">
             <div id={props.labelID}>{props.labelName}</div>
             <div className="grid-control-bar">
-                <FaArrowDown id={props.decrementIdLabel} />
+                <button
+                    className="button-with-icon"
+                    id={props.decrementIdLabel}
+                    onClick={props.decrementValue}
+                >
+                    <FaArrowDown className="icon-style" />
+                </button>
+
                 <div id={props.labelIdLength}>{props.valueLength}</div>
-                <FaArrowUp id={props.incrementIdLabel} />
+
+                <button
+                    className="button-with-icon"
+                    id={props.incrementIdLabel}
+                    onClick={props.incrementValue}
+                >
+                    <FaArrowUp className="icon-style" />
+                </button>
             </div>
         </div>
     );

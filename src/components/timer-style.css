@@ -17,6 +17,7 @@
     --timer-bg-color: rgb(49, 51, 82);
     --outside-border: 2px solid var(--purple);
     --inside-border: 2px solid var(--hotpink);
+    --display-border: 6px solid var(--hotpurple);
     --font-color: #aaa;
 
     --hotpink: #ff69b4;
@@ -45,7 +46,7 @@
 
     font-size: 2.5rem;
 }
-.timer-style {
+.wrapper-timer-style {
     background: var(--timer-bg-color);
     color: var(--font-color);
 }
@@ -56,6 +57,9 @@
 
     border: var(--outside-border);
 }
+
+/* =========Control panel ========= */
+
 .control-panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -73,12 +77,39 @@
 .grid-control-bar {
     display: grid;
     grid-template-columns: 20% 60% 20%;
-    border: var(--inside-border);
     align-items: center;
     justify-items: center;
     padding: 1rem;
+    margin-top: 1rem;
 }
-#break-label,
-#session-labe {
-    margin-bottom: 1rem;
+
+/* ======= Buttons ======== */
+.button-with-icon {
+    width: 6rem;
+    background: var(--timer-bg-color);
+    cursor: pointer;
+}
+.icon-style {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--font-color);
+}
+
+/* ======= Display Timer ======== */
+
+#timer-label,
+#time-left {
+    margin: 1rem auto;
+}
+#time-left {
+    border: var(--display-border);
+    padding: 1.5rem;
+    width: 15rem;
+    color: white;
+}
+
+/* ======= Timer Control Bar ======== */
+.timer-control button {
+    background-color: var(--timer-bg-color);
+    margin: 1rem 1rem;
 }
