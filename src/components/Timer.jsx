@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TimerControl from './TimerControl';
 import './timer-style.css';
 
@@ -7,37 +7,41 @@ import { TbRefresh } from 'react-icons/tb';
 
 export default function Timer() {
     const [valueBreak, setValueBreak] = useState(5);
-    const [valueSession, setValueSession] = useState(25);
-    const [timerDisplayValue, setTimerDisplayValue] = useState(25);
-
+    const [minuts, setMinuts] = useState(25);
+    const [seconds, setSeconds] = useState(60);
     const [playIsPressed, setPlayIsPressed] = useState(false);
 
-    const startTimerRun = () => {
-        setPlayIsPressed((currSing) => (!currSing ? true : false));
+    const timerRef = useRef(seconds);
+
+    useEffect(() => {
+        timerRef.current = seconds;
+    }, [seconds]);
+
+    const resetTimer = () => {
+        setValueBreak(5);
+        setMinuts(25);
+        setSeconds(60);
+        setPlayIsPressed(false);
+    }
+
+    const runCountdown = () => {
+        setIcon();
+        setTimeout(() => {
+            console.log("run Countdown", timerRef.current);
+            setSeconds(seconds - 1);
+        }, 1000)
     };
 
-    // const incrementBreak = () => {
-    //     console.log("INcrement Break" );
-    //     setValueBreak(valueBreak+1)
-    // }
+    const setIcon = () => {
+        setPlayIsPressed((currSing) => (!currSing ? true : false));
+    }
 
-    // const incrementValue = (setting) => {
-    //     console.log("INcrement   " + setting);
-
-    // }
-
-    // const decrementValue = (setting) => {
-    //     console.log("DEcrement  " + setting);
-
-    // }
-
-    const runCountdown = (playIsPressed) => {
-        if(playIsPressed) {
-
-        } else return
+    const displayTimerValues = () => {
+        return minuts + " : " + seconds;
     }
 
     // https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
+    // https://dev.to/zhiyueyi/how-to-create-a-simple-react-countdown-timer-4mc3
 
     return (
         <div className="wrapper-timer wrapper-timer-style">
@@ -59,9 +63,9 @@ export default function Timer() {
                         decrementIdLabel="session-decrement"
                         incrementIdLabel="session-increment"
                         labelIdLength="session-length"
-                        valueLength={valueSession}
-                        incrementValue={() => setValueSession(valueSession + 1)}
-                        decrementValue={() => setValueSession(valueSession - 1)}
+                        valueLength={minuts}
+                        incrementValue={() => setMinuts(minuts + 1)}
+                        decrementValue={() => setMinuts(minuts - 1)}
                     />
                 </div>
                 <div className="timer">
@@ -69,13 +73,13 @@ export default function Timer() {
                         Session
                         {/* Countdown Timer */}
                     </div>
-                    <div id="time-left">{timerDisplayValue}</div>
+                    <div id="time-left">{displayTimerValues()}</div>
                 </div>
                 <div className="timer-control">
                     <button
                         id="start_stop"
                         className="button-with-icon"
-                        onClick={startTimerRun}
+                        onClick={runCountdown}
                     >
                         {!playIsPressed ? (
                             <FaPlay className="icon-style" />
@@ -83,8 +87,8 @@ export default function Timer() {
                             <FaPause className="icon-style" />
                         )}
                     </button>
-                    <button id="reset" className="button-with-icon">
-                        <TbRefresh className="icon-style" />
+                    <button id="reset" className="button-with-icon" onClick={resetTimer}>
+                        <TbRefresh  id="reset-animation" className="icon-style" />
                     </button>
                 </div>
             </div>

@@ -55,7 +55,7 @@
     text-align: center;
     align-items: stretch;
 
-    border: var(--outside-border);
+    /* border: var(--outside-border); */
 }
 
 /* =========Control panel ========= */
@@ -66,13 +66,11 @@
     gap: 6rem;
     text-align: center;
     align-items: stretch;
-
-    border: var(--outside-border);
 }
 .control-bar {
     width: 20rem;
-    border: var(--inside-border);
     padding: 1rem;
+    /* border: var(--inside-border); */
 }
 .grid-control-bar {
     display: grid;
@@ -112,4 +110,18 @@
 .timer-control button {
     background-color: var(--timer-bg-color);
     margin: 1rem 1rem;
+}
+
+/* ======= Animation for refresf icon ======== */
+@keyframes rotateIcon {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+#reset-animation:hover{
+    animation-name: rotateIcon;
+    animation-duration: 1s;
 }
