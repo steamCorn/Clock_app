@@ -54,8 +54,6 @@
     display: grid;
     text-align: center;
     align-items: stretch;
-
-    /* border: var(--outside-border); */
 }
 
 /* =========Control panel ========= */
@@ -70,7 +68,6 @@
 .control-bar {
     width: 20rem;
     padding: 1rem;
-    /* border: var(--inside-border); */
 }
 .grid-control-bar {
     display: grid;
@@ -124,4 +121,15 @@
 #reset-animation:hover{
     animation-name: rotateIcon;
     animation-duration: 1s;
+}
+
+/* ============= MEDIA ============= */
+
+@media  screen and (max-width: 740px) {
+    .control-panel {
+        grid-template-columns: none;
+        gap: 1rem;
+        text-align: center;
+        align-items: stretch;
+    }
 }

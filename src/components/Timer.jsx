@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import TimerControl from './TimerControl';
+import DisplayTimer from './DisplayTimer';
 import './timer-style.css';
 
 import { FaPlay, FaPause } from 'react-icons/fa';
@@ -11,12 +12,6 @@ export default function Timer() {
     const [seconds, setSeconds] = useState(60);
     const [playIsPressed, setPlayIsPressed] = useState(false);
 
-    const timerRef = useRef(seconds);
-
-    useEffect(() => {
-        timerRef.current = seconds;
-    }, [seconds]);
-
     const resetTimer = () => {
         setValueBreak(5);
         setMinuts(25);
@@ -27,10 +22,28 @@ export default function Timer() {
     const runCountdown = () => {
         setIcon();
         setTimeout(() => {
-            console.log("run Countdown", timerRef.current);
+            console.log("run Countdown");
             setSeconds(seconds - 1);
         }, 1000)
     };
+
+    // const handlerPlayIsPressed = () => {
+    //     const timeout = setTimeout(() => {
+    //         setSeconds(seconds - 1);
+    //     }, 1000);
+    //     return () => clearTimeout(timeout);
+    // }
+
+    useEffect(() => {
+        if(playIsPressed){
+            const timeout = setTimeout(() => {
+                setSeconds(seconds - 1);
+            }, 1000);
+            return () => clearTimeout(timeout);
+        }
+        
+    }, [seconds])
+
 
     const setIcon = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
@@ -46,6 +59,7 @@ export default function Timer() {
     return (
         <div className="wrapper-timer wrapper-timer-style">
             <div className="timer-control-panel">
+                <h2>25+5 Clok</h2>
                 <div className="control-panel">
                     <TimerControl
                         labelID={'break-label'}
@@ -73,7 +87,10 @@ export default function Timer() {
                         Session
                         {/* Countdown Timer */}
                     </div>
-                    <div id="time-left">{displayTimerValues()}</div>
+                    {/* <div id="time-left">{displayTimerValues()}</div> */}
+                    <DisplayTimer 
+                        displayTimerValues = {displayTimerValues()}
+                    />
                 </div>
                 <div className="timer-control">
                     <button
