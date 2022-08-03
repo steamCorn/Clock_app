@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import TimerControl from './TimerControl';
 import DisplayTimer from './DisplayTimer';
 import './timer-style.css';
@@ -9,44 +9,59 @@ import { TbRefresh } from 'react-icons/tb';
 export default function Timer() {
     const [valueBreak, setValueBreak] = useState(5);
     const [minuts, setMinuts] = useState(25);
-    const [seconds, setSeconds] = useState(60);
+    const [seconds, setSeconds] = useState(59);
     const [playIsPressed, setPlayIsPressed] = useState(false);
 
     const resetTimer = () => {
         setValueBreak(5);
         setMinuts(25);
-        setSeconds(60);
+        setSeconds(59);
         setPlayIsPressed(false);
     }
 
-    const runCountdown = () => {
-        setIcon();
-        setTimeout(() => {
-            console.log("run Countdown");
-            setSeconds(seconds - 1);
-        }, 1000)
-    };
-
-    // const handlerPlayIsPressed = () => {
-    //     const timeout = setTimeout(() => {
-    //         setSeconds(seconds - 1);
-    //     }, 1000);
-    //     return () => clearTimeout(timeout);
-    // }
+ 
 
     useEffect(() => {
+        const timeInterval = setInterval( () => {
+            console.log("useEffect run countdown if play is pressed");
+            runCountdown();
+        }, 1000);
+
+        return ()=> {
+            clearInterval(timeInterval)
+        };
+
+    }, [seconds, playIsPressed])
+
+    const runCountdown = () => {
         if(playIsPressed){
-            const timeout = setTimeout(() => {
-                setSeconds(seconds - 1);
-            }, 1000);
-            return () => clearTimeout(timeout);
+            
+            setSeconds(seconds - 1);
         }
-        
-    }, [seconds])
+    };
 
 
-    const setIcon = () => {
+    // const handlerPlayIsPressed = () => {
+    //     const clearInterval = setInterval(setSeconds(seconds - 1), 1000);
+    //     if (!playIsPressed){
+    //         console.log("run countdown if play is pressed");
+    //         setPlayIsPressed(true);
+    //         setSeconds(seconds - 1);
+    //     } else {
+    //         console.log("run countdown if play is NOT pressed");
+    //         setPlayIsPressed(false);
+    //         clearInterval(clearInterval)
+    //     }
+    // }
+    // console.log(playIsPressed);
+
+
+    const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
+        console.log("playIsPressed   ",!playIsPressed);
+
+
+        // runCountdown();
     }
 
     const displayTimerValues = () => {
@@ -83,20 +98,14 @@ export default function Timer() {
                     />
                 </div>
                 <div className="timer">
-                    <div id="timer-label">
-                        Session
-                        {/* Countdown Timer */}
-                    </div>
-                    {/* <div id="time-left">{displayTimerValues()}</div> */}
-                    <DisplayTimer 
-                        displayTimerValues = {displayTimerValues()}
-                    />
+                    <div id="timer-label"> Session </div>
+                    <DisplayTimer displayTimerValues = {displayTimerValues()} />
                 </div>
                 <div className="timer-control">
                     <button
                         id="start_stop"
                         className="button-with-icon"
-                        onClick={runCountdown}
+                        onClick={handlerPlayButtonClick}
                     >
                         {!playIsPressed ? (
                             <FaPlay className="icon-style" />
