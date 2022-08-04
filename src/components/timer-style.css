@@ -118,14 +118,14 @@
         transform: rotate(-360deg);
     }
 }
-#reset-animation:hover{
+#reset-animation:hover {
     animation-name: rotateIcon;
     animation-duration: 1s;
 }
 
 /* ============= MEDIA ============= */
 
-@media  screen and (max-width: 740px) {
+@media screen and (max-width: 740px) {
     .control-panel {
         grid-template-columns: none;
         gap: 1rem;

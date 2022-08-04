@@ -1,7 +1,13 @@
-function getRemainingTimeInSeconds (minutes) {
-   console.log("Minuts  ",minutes, "secunds  ",(minutes/1000) * 60 )
-   const seconds = Math.floor( (minutes) * 60);
-   return seconds;
+function getMinutes(seconds) {
+   const minutes = Math.floor(seconds / 60);
+   return minutes;
 }
 
-export {getRemainingTimeInSeconds};
+function getMinutesFromSeconds(time) {
+   const totalSec = time;
+   const minutes = Math.floor(totalSec / 60);
+   const seconds = totalSec - (minutes*60);
+   return {seconds , minutes};
+}
+
+export { getMinutes, getMinutesFromSeconds };
