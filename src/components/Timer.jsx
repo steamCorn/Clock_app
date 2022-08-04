@@ -11,23 +11,22 @@ import {getRemainingTimeInSeconds} from '../utils/utilGetSecunds';
 export default function Timer() {
     const initialParameters = { 
         "seconds": 59,
-        "minutes": 25, 
+        // "minutes": 25, 
         "valueBreak": 5,
         "playIsPressed": false 
     }
     const [valueBreak, setValueBreak] = useState(initialParameters.valueBreak);
-    const [minutes, setMinutes] = useState(initialParameters.minutes);
+    // const [minutes, setMinutes] = useState(initialParameters.minutes);
     const [seconds, setSeconds] = useState(initialParameters.seconds);
     const [playIsPressed, setPlayIsPressed] = useState(initialParameters.playIsPressed);
 
     const resetTimer = () => {
         setValueBreak(initialParameters.valueBreak);
-        setMinutes(initialParameters.minutes);
+        // setMinutes(initialParameters.minutes);
         setSeconds(initialParameters.seconds);
         setPlayIsPressed(initialParameters.playIsPressed);
     }
 
-    
     useEffect(() => {
         if(playIsPressed){
             const timeInterval = setInterval( () => {
@@ -51,7 +50,8 @@ export default function Timer() {
     }
 
     const displayTimerValues = () => {
-        return minutes + " : " + seconds;
+        // return minutes + " : " + seconds;
+        return seconds;
     }
 
     const incrementValue = (setValue, value) => {
@@ -87,19 +87,25 @@ export default function Timer() {
                         decrementIdLabel="session-decrement"
                         incrementIdLabel="session-increment"
                         labelIdLength="session-length"
-                        valueLength={minutes}
-                        incrementValue={() => incrementValue(setMinutes, minutes)}
-                        decrementValue={() => decrementValue(setMinutes, minutes)}
+                        // valueLength={minutes}
+                        valueLength={seconds}
+                        // incrementValue={() => incrementValue(setMinutes, minutes)}
+                        // decrementValue={() => decrementValue(setMinutes, minutes)}
+                        incrementValue={() => incrementValue(setSeconds, seconds)}
+                        decrementValue={() => decrementValue(setSeconds, seconds)}
                     />
                 </div>
                 <div className="timer">
                     <div id="timer-label"> Session </div>
-                    <DisplayTimer displayTimerValues = {displayTimerValues()} />
+                    <DisplayTimer 
+                        seconds = {seconds}
+                        displayTimerValues = {displayTimerValues()} 
+                    />
                 </div>
-                <div>
+                {/* <div>
                     <h4>Total secunds</h4>
                     {getRemainingTimeInSeconds(minutes)}
-                </div>
+                </div> */}
                 <div className="timer-control">
                     <button
                         id="start_stop"
