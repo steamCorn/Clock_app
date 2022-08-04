@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import TimerControl from './TimerControl';
 import DisplayTimer from './DisplayTimer';
 import './timer-style.css';
@@ -19,7 +19,16 @@ export default function Timer() {
         setPlayIsPressed(false);
     }
 
- 
+    //    if you have dependencies in your function, 
+    //    you will have to include them in the useCallback dependencies array 
+    //    and this will trigger the useEffect again if the function's params change.
+    //    https://stackoverflow.com/questions/55840294/how-to-fix-missing-dependency-warning-when-using-useeffect-react-hook
+
+    const runCountdown = useCallback(() => {
+        if(playIsPressed){
+            setSeconds(seconds - 1);
+        }
+    }, [seconds, playIsPressed]);
 
     useEffect(() => {
         const timeInterval = setInterval( () => {
@@ -31,37 +40,14 @@ export default function Timer() {
             clearInterval(timeInterval)
         };
 
-    }, [seconds, playIsPressed])
-
-    const runCountdown = () => {
-        if(playIsPressed){
-            
-            setSeconds(seconds - 1);
-        }
-    };
+    }, [ runCountdown])
 
 
-    // const handlerPlayIsPressed = () => {
-    //     const clearInterval = setInterval(setSeconds(seconds - 1), 1000);
-    //     if (!playIsPressed){
-    //         console.log("run countdown if play is pressed");
-    //         setPlayIsPressed(true);
-    //         setSeconds(seconds - 1);
-    //     } else {
-    //         console.log("run countdown if play is NOT pressed");
-    //         setPlayIsPressed(false);
-    //         clearInterval(clearInterval)
-    //     }
-    // }
-    // console.log(playIsPressed);
 
 
     const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
         console.log("playIsPressed   ",!playIsPressed);
-
-
-        // runCountdown();
     }
 
     const displayTimerValues = () => {
