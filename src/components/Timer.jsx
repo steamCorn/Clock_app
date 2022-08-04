@@ -6,7 +6,7 @@ import './timer-style.css';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { TbRefresh } from 'react-icons/tb';
 
-import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSecunds';
+import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSeconds';
 
 export default function Timer() {
     const initialParameters = {
@@ -35,30 +35,55 @@ export default function Timer() {
                 setSeconds(seconds - 1);
             }, 1000);
 
+            if(seconds === 0){
+                console.log('stop timer');
+                clearInterval(timeInterval);
+            }
+
             return () => {
                 clearInterval(timeInterval);
             };
-        }
+        } 
+        
     }, [seconds, playIsPressed]);
+
 
     const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
     };
+    
+    const displayDigits = (digits) => {
+        if(digits < 10){
+            return "0" + digits;
+        } else return digits;
+    }
 
     const displayTimerValues = () => {
         const min = getMinutesFromSeconds(seconds).minutes;
         const sec = getMinutesFromSeconds(seconds).seconds;
-        return min + '  :  ' + sec;
-    };
+        return displayDigits(min) + ':' + displayDigits(sec);
+    }
 
     const incrementValue = (setValue, value) => {
-        console.log('incrementValue   ', value);
-        setValue(value + 60);
-    };
+        if(value < 3600){
+            console.log('incrementValue   ', value);
+            setValue(value + 60);
+        } else {
+            console.log('incrementValue ', value, "  > 60");
+            return false
+        };
+        
+    }
     const decrementValue = (setValue, value) => {
-        console.log('decrementValue   ', value);
-        setValue(value - 60);
-    };
+        if(value > 0){
+            console.log('decrementValue   ', value);
+            setValue(value - 60);
+        } else {
+            console.log('decrementValue ', value, "  < 0");
+            return false
+        };
+        
+    }
 
     // https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
     // https://dev.to/zhiyueyi/how-to-create-a-simple-react-countdown-timer-4mc3
