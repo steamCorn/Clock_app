@@ -11,12 +11,12 @@ import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSeconds';
 export default function Timer() {
     const initialParameters = {
         seconds: 1500,
-        valueBreak: 300,
-        // sessionLength: 1500,
+        valueBreak: 5,
+        sessionLength: 25,
         playIsPressed: false,
     };
     const [valueBreak, setValueBreak] = useState(initialParameters.valueBreak);
-    // const [sessionLength, setSessionLength] = useState(initialParameters.sessionLength);
+    const [sessionLength, setSessionLength] = useState(initialParameters.sessionLength);
     const [seconds, setSeconds] = useState(initialParameters.seconds);
     const [playIsPressed, setPlayIsPressed] = useState(
         initialParameters.playIsPressed,
@@ -24,7 +24,7 @@ export default function Timer() {
 
     const resetTimer = () => {
         setValueBreak(initialParameters.valueBreak);
-        // setSessionLength(initialParameters.sessionLength);
+        setSessionLength(initialParameters.sessionLength);
         setSeconds(initialParameters.seconds);
         setPlayIsPressed(initialParameters.playIsPressed);
     };
@@ -51,23 +51,13 @@ export default function Timer() {
     const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
     };
-    
-    const displayDigits = (digits) => {
-        if(digits < 10){
-            return "0" + digits;
-        } else return digits;
-    }
 
-    const displayTimerValues = () => {
-        const min = getMinutesFromSeconds(seconds).minutes;
-        const sec = getMinutesFromSeconds(seconds).seconds;
-        return displayDigits(min) + ':' + displayDigits(sec);
-    }
 
     const incrementValue = (setValue, value) => {
-        if(value < 3600){
+        if(value < 60){
             console.log('incrementValue   ', value);
-            setValue(value + 60);
+            setValue(value + 1);
+            setSeconds(seconds + 60);
         } else {
             console.log('incrementValue ', value, "  > 60");
             return false
@@ -77,7 +67,8 @@ export default function Timer() {
     const decrementValue = (setValue, value) => {
         if(value > 0){
             console.log('decrementValue   ', value);
-            setValue(value - 60);
+            setValue(value - 1);
+            setSeconds(seconds - 60);
         } else {
             console.log('decrementValue ', value, "  < 0");
             return false
@@ -99,7 +90,7 @@ export default function Timer() {
                         decrementIdLabel="break-decrement"
                         incrementIdLabel="break-increment"
                         labelIdLength="break-length"
-                        valueLength={getMinutes(valueBreak)}
+                        valueLength={valueBreak}
                         incrementValue={() =>
                             incrementValue(setValueBreak, valueBreak)
                         }
@@ -113,20 +104,19 @@ export default function Timer() {
                         decrementIdLabel="session-decrement"
                         incrementIdLabel="session-increment"
                         labelIdLength="session-length"
-                        valueLength={getMinutes(seconds)}
-                        incrementValue={() =>
-                            incrementValue(setSeconds, seconds)
-                        }
-                        decrementValue={() =>
-                            decrementValue(setSeconds, seconds)
-                        }
+                        valueLength={sessionLength}
+                        incrementValue={() => {
+                            incrementValue(setSessionLength, sessionLength)
+                        }}
+                        decrementValue={() => {
+                            decrementValue(setSessionLength, sessionLength)
+                        }}
                     />
                 </div>
                 <div className="timer">
                     <div id="timer-label"> Session </div>
                     <DisplayTimer
                         seconds={seconds}
-                        displayTimerValues={displayTimerValues()}
                     />
                 </div>
                 <div className="timer-control">
