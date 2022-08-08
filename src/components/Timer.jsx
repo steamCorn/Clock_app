@@ -6,7 +6,7 @@ import './timer-style.css';
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { TbRefresh } from 'react-icons/tb';
 
-import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSeconds';
+// import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSeconds';
 
 export default function Timer() {
     const initialParameters = {
@@ -31,50 +31,111 @@ export default function Timer() {
 
     useEffect(() => {
         if (playIsPressed) {
-            const timeInterval = setInterval(() => {
+            const timeSession = setInterval(() => {
                 setSeconds(seconds - 1);
             }, 1000);
-
+            console.log('seconds   ', seconds);
             if(seconds === 0){
                 console.log('stop timer');
-                clearInterval(timeInterval);
+                clearInterval(timeSession);
             }
 
             return () => {
-                clearInterval(timeInterval);
+                clearInterval(timeSession);
             };
+
+            // runCountdownSession();
         } 
         
     }, [seconds, playIsPressed]);
 
+    const runCountdownSession = () => {
+        // const timeSession = setInterval(() => {
+        //     setSeconds(seconds - 1);
+        // }, 1000);
+        // console.log('seconds   ', seconds);
+        // if(seconds === 0){
+        //     console.log('stop timer');
+        //     clearInterval(timeSession);
+        // }
+
+        // return () => {
+        //     clearInterval(timeSession);
+        // };
+    }
 
     const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
     };
 
+    const incrementBreak = () => {
+        if(valueBreak < 60  || seconds < 3600){
+            console.log('incrementBreak   ');
+            setValueBreak(valueBreak + 1);
+        } else {
+            console.log('incrementBreak   >= 60');
+            return false
+        };
+    }
 
-    const incrementValue = (setValue, value) => {
-        if(value < 60){
-            console.log('incrementValue   ', value);
-            setValue(value + 1);
+    const decrementBreak = () => {
+        if(valueBreak > 1  || seconds > 60){
+            console.log('decrementBreak   ');
+            setValueBreak(valueBreak - 1);
+        } else {
+            console.log('decrementBreak ',"  = 1");
+            return false
+        };   
+    }
+
+    const incrementSession = () => {
+        if(sessionLength < 59 || seconds < 3600){
+            console.log('incrementSession   ');
+            setSessionLength(sessionLength + 1);
             setSeconds(seconds + 60);
         } else {
-            console.log('incrementValue ', value, "  > 60");
+            console.log('incrementSession ', "  >= 60");
             return false
         };
         
     }
-    const decrementValue = (setValue, value) => {
-        if(value > 0){
-            console.log('decrementValue   ', value);
-            setValue(value - 1);
+    const decrementSession = () => {
+        if(sessionLength > 1 || seconds > 60){
+            console.log('decrementSession   ');
+            setSessionLength(sessionLength - 1);
             setSeconds(seconds - 60);
         } else {
-            console.log('decrementValue ', value, "  < 0");
+            console.log('decrementSession '," sessionLength < 1");
             return false
         };
         
     }
+
+    // console.log('seconds   ', seconds);
+
+    // const incrementValue = (setValue, value) => {
+    //     if(value < 60){
+    //         console.log('incrementValue   ', value);
+    //         setValue(value + 1);
+    //         setSeconds(seconds + 60);
+    //     } else {
+    //         console.log('incrementValue ', value, "  > 60");
+    //         return false
+    //     };
+        
+    // }
+    // const decrementValue = (setValue, value) => {
+    //     if(value > 0){
+    //         console.log('decrementValue   ', value);
+    //         setValue(value - 1);
+    //         setSeconds(seconds - 60);
+    //     } else {
+    //         console.log('decrementValue ', value, "  < 0");
+    //         return false
+    //     }    
+    // }
+
+
 
     // https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
     // https://dev.to/zhiyueyi/how-to-create-a-simple-react-countdown-timer-4mc3
@@ -91,12 +152,8 @@ export default function Timer() {
                         incrementIdLabel="break-increment"
                         labelIdLength="break-length"
                         valueLength={valueBreak}
-                        incrementValue={() =>
-                            incrementValue(setValueBreak, valueBreak)
-                        }
-                        decrementValue={() =>
-                            decrementValue(setValueBreak, valueBreak)
-                        }
+                        incrementValue={() => incrementBreak()}
+                        decrementValue={() => decrementBreak()}
                     />
                     <TimerControl
                         labelID={'session-label'}
@@ -105,12 +162,8 @@ export default function Timer() {
                         incrementIdLabel="session-increment"
                         labelIdLength="session-length"
                         valueLength={sessionLength}
-                        incrementValue={() => {
-                            incrementValue(setSessionLength, sessionLength)
-                        }}
-                        decrementValue={() => {
-                            decrementValue(setSessionLength, sessionLength)
-                        }}
+                        incrementValue={() => incrementSession()}
+                        decrementValue={() => decrementSession()}
                     />
                 </div>
                 <div className="timer">
@@ -118,6 +171,11 @@ export default function Timer() {
                     <DisplayTimer
                         seconds={seconds}
                     />
+                    <audio 
+                        id="beep" 
+                        src="" 
+                        type="audio/mp3"
+                    ></audio>
                 </div>
                 <div className="timer-control">
                     <button
