@@ -5,6 +5,7 @@ import './timer-style.css';
 
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { TbRefresh } from 'react-icons/tb';
+import beep from '../files/beep.wav';
 
 // import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSeconds';
 
@@ -14,6 +15,7 @@ export default function Timer() {
         valueBreak: 5,
         sessionLength: 25,
         playIsPressed: false,
+        audioPlaying: false
     };
     const [valueBreak, setValueBreak] = useState(initialParameters.valueBreak);
     const [sessionLength, setSessionLength] = useState(initialParameters.sessionLength);
@@ -22,12 +24,32 @@ export default function Timer() {
         initialParameters.playIsPressed,
     );
 
+    const audioSound = document.getElementById('beep');
+    
+
     const resetTimer = () => {
         setValueBreak(initialParameters.valueBreak);
         setSessionLength(initialParameters.sessionLength);
         setSeconds(initialParameters.seconds);
         setPlayIsPressed(initialParameters.playIsPressed);
+        stopAudioPlaying()
     };
+
+
+    const toggleAudioPlaying = () => {
+        startAudioPlaying();
+
+        setTimeout(()=>stopAudioPlaying(), 3500);
+    }
+    const startAudioPlaying = () => {
+        console.log("start sound")
+        audioSound.loop = true;
+        audioSound.play();
+    }
+    const stopAudioPlaying = () => {
+        console.log("stop sound")
+        audioSound.pause();
+    }
 
     useEffect(() => {
         if (playIsPressed) {
@@ -49,6 +71,7 @@ export default function Timer() {
         
     }, [seconds, playIsPressed]);
 
+
     const runCountdownSession = () => {
         // const timeSession = setInterval(() => {
         //     setSeconds(seconds - 1);
@@ -67,6 +90,7 @@ export default function Timer() {
     const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
     };
+
 
     const incrementBreak = () => {
         if(valueBreak < 60  || seconds < 3600){
@@ -171,11 +195,11 @@ export default function Timer() {
                     <DisplayTimer
                         seconds={seconds}
                     />
-                    <audio 
-                        id="beep" 
-                        src="" 
-                        type="audio/mp3"
-                    ></audio>
+
+                    <audio id="beep" preload="auto">
+                        <source src={beep} type="audio/wav"/>
+                    </audio>
+
                 </div>
                 <div className="timer-control">
                     <button
@@ -189,6 +213,9 @@ export default function Timer() {
                             <FaPause className="icon-style" />
                         )}
                     </button>
+
+                    <button onClick={toggleAudioPlaying}>{"Play"}</button>
+
                     <button
                         id="reset"
                         className="button-with-icon"
