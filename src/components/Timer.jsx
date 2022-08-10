@@ -7,7 +7,7 @@ import { FaPlay, FaPause } from 'react-icons/fa';
 import { TbRefresh } from 'react-icons/tb';
 import beep from '../files/beep.wav';
 
-// import { getMinutes, getMinutesFromSeconds } from '../utils/utilGetSeconds';
+import { getSeconds } from '../utils/utilGetSeconds';
 
 export default function Timer() {
     const initialParameters = {
@@ -15,7 +15,7 @@ export default function Timer() {
         valueBreak: 5,
         sessionLength: 25,
         playIsPressed: false,
-        audioPlaying: false
+        timerForBreak: false
     };
     const [valueBreak, setValueBreak] = useState(initialParameters.valueBreak);
     const [sessionLength, setSessionLength] = useState(initialParameters.sessionLength);
@@ -23,9 +23,33 @@ export default function Timer() {
     const [playIsPressed, setPlayIsPressed] = useState(
         initialParameters.playIsPressed,
     );
+    const [timerForBreak , setTimerForBreak] = useState(initialParameters.timerForBreak);
 
     const audioSound = document.getElementById('beep');
-    
+
+    useEffect(() => {
+        if (playIsPressed) {
+            const timeSession = setInterval(() => {
+                setSeconds(seconds - 1);
+            }, 100);
+
+            if(seconds == 0){
+                setTimerForBreak((currTimer)=> (!currTimer ? true : false));
+
+                console.log('stop Session timer');
+                playAudio();
+                clearInterval(timeSession);
+            }
+            if(timerForBreak){
+                setSeconds(getSeconds(valueBreak));
+                console.log('Start new timer BREAK');
+            }
+
+            return () => clearInterval(timeSession);
+        } 
+    }, [seconds, playIsPressed, timerForBreak]);
+
+    console.log(timerForBreak);
 
     const resetTimer = () => {
         setValueBreak(initialParameters.valueBreak);
@@ -35,65 +59,22 @@ export default function Timer() {
         stopAudioPlaying()
     };
 
-
-    const toggleAudioPlaying = () => {
-        startAudioPlaying();
-
-        setTimeout(()=>stopAudioPlaying(), 3500);
-    }
-    const startAudioPlaying = () => {
-        console.log("start sound")
+    const playAudio = () => {
         audioSound.loop = true;
         audioSound.play();
+        setTimeout(()=>stopAudioPlaying(), 3500);
     }
+
     const stopAudioPlaying = () => {
-        console.log("stop sound")
         audioSound.pause();
-    }
-
-    useEffect(() => {
-        if (playIsPressed) {
-            const timeSession = setInterval(() => {
-                setSeconds(seconds - 1);
-            }, 1000);
-            console.log('seconds   ', seconds);
-            if(seconds === 0){
-                console.log('stop timer');
-                clearInterval(timeSession);
-            }
-
-            return () => {
-                clearInterval(timeSession);
-            };
-
-            // runCountdownSession();
-        } 
-        
-    }, [seconds, playIsPressed]);
-
-
-    const runCountdownSession = () => {
-        // const timeSession = setInterval(() => {
-        //     setSeconds(seconds - 1);
-        // }, 1000);
-        // console.log('seconds   ', seconds);
-        // if(seconds === 0){
-        //     console.log('stop timer');
-        //     clearInterval(timeSession);
-        // }
-
-        // return () => {
-        //     clearInterval(timeSession);
-        // };
     }
 
     const handlerPlayButtonClick = () => {
         setPlayIsPressed((currSing) => (!currSing ? true : false));
     };
 
-
     const incrementBreak = () => {
-        if(valueBreak < 60  || seconds < 3600){
+        if(valueBreak < 60){
             console.log('incrementBreak   ');
             setValueBreak(valueBreak + 1);
         } else {
@@ -103,63 +84,33 @@ export default function Timer() {
     }
 
     const decrementBreak = () => {
-        if(valueBreak > 1  || seconds > 60){
+        if(valueBreak > 1 ){
             console.log('decrementBreak   ');
             setValueBreak(valueBreak - 1);
         } else {
-            console.log('decrementBreak ',"  = 1");
+            console.log('decrementBreak ', valueBreak);
             return false
         };   
     }
 
     const incrementSession = () => {
-        if(sessionLength < 59 || seconds < 3600){
-            console.log('incrementSession   ');
+        if(sessionLength < 60 && seconds < 3600){
             setSessionLength(sessionLength + 1);
             setSeconds(seconds + 60);
         } else {
-            console.log('incrementSession ', "  >= 60");
             return false
         };
-        
     }
     const decrementSession = () => {
-        if(sessionLength > 1 || seconds > 60){
-            console.log('decrementSession   ');
+        if(sessionLength > 1 && seconds > 119){
             setSessionLength(sessionLength - 1);
             setSeconds(seconds - 60);
+        } else if (sessionLength > 1 && seconds < 119){
+            setSessionLength(sessionLength - 1);
         } else {
-            console.log('decrementSession '," sessionLength < 1");
             return false
-        };
-        
+        };  
     }
-
-    // console.log('seconds   ', seconds);
-
-    // const incrementValue = (setValue, value) => {
-    //     if(value < 60){
-    //         console.log('incrementValue   ', value);
-    //         setValue(value + 1);
-    //         setSeconds(seconds + 60);
-    //     } else {
-    //         console.log('incrementValue ', value, "  > 60");
-    //         return false
-    //     };
-        
-    // }
-    // const decrementValue = (setValue, value) => {
-    //     if(value > 0){
-    //         console.log('decrementValue   ', value);
-    //         setValue(value - 1);
-    //         setSeconds(seconds - 60);
-    //     } else {
-    //         console.log('decrementValue ', value, "  < 0");
-    //         return false
-    //     }    
-    // }
-
-
 
     // https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
     // https://dev.to/zhiyueyi/how-to-create-a-simple-react-countdown-timer-4mc3
@@ -192,9 +143,7 @@ export default function Timer() {
                 </div>
                 <div className="timer">
                     <div id="timer-label"> Session </div>
-                    <DisplayTimer
-                        seconds={seconds}
-                    />
+                    <DisplayTimer seconds={seconds} />
 
                     <audio id="beep" preload="auto">
                         <source src={beep} type="audio/wav"/>
@@ -213,8 +162,6 @@ export default function Timer() {
                             <FaPause className="icon-style" />
                         )}
                     </button>
-
-                    <button onClick={toggleAudioPlaying}>{"Play"}</button>
 
                     <button
                         id="reset"

@@ -1,6 +1,6 @@
-function getMinutes(seconds) {
-   const minutes = Math.floor(seconds / 60);
-   return minutes;
+function getSeconds(value) {
+   const seconds = Math.floor(value * 60);
+   return seconds;
 }
 
 function getMinutesFromSeconds(time) {
@@ -10,4 +10,4 @@ function getMinutesFromSeconds(time) {
    return {seconds , minutes};
 }
 
-export { getMinutes, getMinutesFromSeconds };
+export { getSeconds, getMinutesFromSeconds };
