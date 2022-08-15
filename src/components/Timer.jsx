@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import TimerControl from './TimerControl';
 import DisplayTimer from './DisplayTimer';
 import './timer-style.css';
@@ -12,47 +12,55 @@ import { getSeconds } from '../utils/utilGetSeconds';
 export default function Timer() {
     const initialParameters = {
         seconds: 1500,
-        valueBreak: 5,
+        breakLength: 5,
         sessionLength: 25,
         playIsPressed: false,
-        timerForBreak: false
+        timerType: "session"
     };
-    const [valueBreak, setValueBreak] = useState(initialParameters.valueBreak);
+    const [breakLength, setBreakLength] = useState(initialParameters.breakLength);
     const [sessionLength, setSessionLength] = useState(initialParameters.sessionLength);
     const [seconds, setSeconds] = useState(initialParameters.seconds);
     const [playIsPressed, setPlayIsPressed] = useState(
         initialParameters.playIsPressed,
     );
-    const [timerForBreak , setTimerForBreak] = useState(initialParameters.timerForBreak);
+    const [timerType , setTimerType] = useState(initialParameters.timerType);
 
-    const audioSound = document.getElementById('beep');
+    const audioSound = useRef(null);
 
     useEffect(() => {
         if (playIsPressed) {
             const timeSession = setInterval(() => {
                 setSeconds(seconds - 1);
-            }, 100);
+            }, 1000);
 
             if(seconds == 0){
-                setTimerForBreak((currTimer)=> (!currTimer ? true : false));
-
-                console.log('stop Session timer');
                 playAudio();
-                clearInterval(timeSession);
-            }
-            if(timerForBreak){
-                setSeconds(getSeconds(valueBreak));
-                console.log('Start new timer BREAK');
-            }
 
+                // console.log('Change type timer');
+
+                setTimerType( timerType=="session" ? "break" : "session");
+
+                if(timerType == "session"){
+                    // it's a little confusing here
+                    // console.log('Start new timer BREAK');
+                    setSeconds(getSeconds(breakLength));
+                }
+
+                if(timerType == "break"){
+                    // it's a little confusing here
+                    // console.log('Start new timer SESSION');
+                    setSeconds(getSeconds(sessionLength));
+                }
+            }
             return () => clearInterval(timeSession);
         } 
-    }, [seconds, playIsPressed, timerForBreak]);
+    }, [seconds, playIsPressed, timerType]);
 
-    console.log(timerForBreak);
+
+    // console.log(timerType);
 
     const resetTimer = () => {
-        setValueBreak(initialParameters.valueBreak);
+        setBreakLength(initialParameters.breakLength);
         setSessionLength(initialParameters.sessionLength);
         setSeconds(initialParameters.seconds);
         setPlayIsPressed(initialParameters.playIsPressed);
@@ -61,12 +69,12 @@ export default function Timer() {
 
     const playAudio = () => {
         audioSound.loop = true;
-        audioSound.play();
+        audioSound.current.play();
         setTimeout(()=>stopAudioPlaying(), 3500);
     }
 
     const stopAudioPlaying = () => {
-        audioSound.pause();
+        audioSound.current.pause();
     }
 
     const handlerPlayButtonClick = () => {
@@ -74,21 +82,21 @@ export default function Timer() {
     };
 
     const incrementBreak = () => {
-        if(valueBreak < 60){
-            console.log('incrementBreak   ');
-            setValueBreak(valueBreak + 1);
+        if(breakLength < 60){
+            // console.log('incrementBreak   ');
+            setBreakLength(breakLength + 1);
         } else {
-            console.log('incrementBreak   >= 60');
+            // console.log('incrementBreak   >= 60');
             return false
         };
     }
 
     const decrementBreak = () => {
-        if(valueBreak > 1 ){
-            console.log('decrementBreak   ');
-            setValueBreak(valueBreak - 1);
+        if(breakLength > 1 ){
+            // console.log('decrementBreak   ');
+            setBreakLength(breakLength - 1);
         } else {
-            console.log('decrementBreak ', valueBreak);
+            // console.log('decrementBreak ', breakLength);
             return false
         };   
     }
@@ -96,7 +104,8 @@ export default function Timer() {
     const incrementSession = () => {
         if(sessionLength < 60 && seconds < 3600){
             setSessionLength(sessionLength + 1);
-            setSeconds(seconds + 60);
+            // setSeconds(seconds + 60);
+            setSeconds(getSeconds(sessionLength) + 60);
         } else {
             return false
         };
@@ -104,7 +113,8 @@ export default function Timer() {
     const decrementSession = () => {
         if(sessionLength > 1 && seconds > 119){
             setSessionLength(sessionLength - 1);
-            setSeconds(seconds - 60);
+            // setSeconds(seconds - 60);
+            setSeconds(getSeconds(sessionLength) - 60);
         } else if (sessionLength > 1 && seconds < 119){
             setSessionLength(sessionLength - 1);
         } else {
@@ -112,9 +122,7 @@ export default function Timer() {
         };  
     }
 
-    // https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/
-    // https://dev.to/zhiyueyi/how-to-create-a-simple-react-countdown-timer-4mc3
-
+ 
     return (
         <div className="wrapper-timer wrapper-timer-style">
             <div className="timer-control-panel">
@@ -126,7 +134,7 @@ export default function Timer() {
                         decrementIdLabel="break-decrement"
                         incrementIdLabel="break-increment"
                         labelIdLength="break-length"
-                        valueLength={valueBreak}
+                        valueLength={breakLength}
                         incrementValue={() => incrementBreak()}
                         decrementValue={() => decrementBreak()}
                     />
@@ -145,7 +153,7 @@ export default function Timer() {
                     <div id="timer-label"> Session </div>
                     <DisplayTimer seconds={seconds} />
 
-                    <audio id="beep" preload="auto">
+                    <audio id="beep" preload="auto" ref={audioSound}>
                         <source src={beep} type="audio/wav"/>
                     </audio>
 
