@@ -4,7 +4,9 @@ The React-Countdown is a simple single page web application which .
 The React-Countdown was building ...
 This application was created as part of the Front End Development Libraries course called **"25 + 5 Clock"**.
 
+<div style="width:700px ; height:700px">
 ![Countdown](/src/file/clock_app.png)
+<div>
 
 ## What is the use of this Repo
 
