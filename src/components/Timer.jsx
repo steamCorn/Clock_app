@@ -5,7 +5,8 @@ import './timer-style.css';
 
 import { FaPlay, FaPause } from 'react-icons/fa';
 import { TbRefresh } from 'react-icons/tb';
-import beep from '../files/beep.wav';
+// import beep from '../files/beep.wav';
+// import beep from 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav';
 
 import { getSeconds } from '../utils/utilGetSeconds';
 
@@ -15,7 +16,7 @@ export default function Timer() {
         breakLength: 5,
         sessionLength: 25,
         playIsPressed: false,
-        timerType: "session"
+        timerType: "Session"
     };
     const [breakLength, setBreakLength] = useState(initialParameters.breakLength);
     const [sessionLength, setSessionLength] = useState(initialParameters.sessionLength);
@@ -33,48 +34,41 @@ export default function Timer() {
                 setSeconds(seconds - 1);
             }, 1000);
 
-            if(seconds == 0){
+            if(seconds === 0){
                 playAudio();
-
-                // console.log('Change type timer');
-
-                setTimerType( timerType=="session" ? "break" : "session");
-
-                if(timerType == "session"){
+                setTimerType( timerType==="Session" ? "Break" : "Session");
+                if(timerType === "Session"){
                     // it's a little confusing here
-                    // console.log('Start new timer BREAK');
                     setSeconds(getSeconds(breakLength));
                 }
 
-                if(timerType == "break"){
+                if(timerType === "Break"){
                     // it's a little confusing here
-                    // console.log('Start new timer SESSION');
                     setSeconds(getSeconds(sessionLength));
                 }
             }
             return () => clearInterval(timeSession);
         } 
-    }, [seconds, playIsPressed, timerType]);
-
-
-    // console.log(timerType);
+    }, [seconds, playIsPressed, timerType, breakLength, sessionLength]);
 
     const resetTimer = () => {
         setBreakLength(initialParameters.breakLength);
         setSessionLength(initialParameters.sessionLength);
         setSeconds(initialParameters.seconds);
         setPlayIsPressed(initialParameters.playIsPressed);
-        stopAudioPlaying()
+        stopAudioPlaying();
+        setTimerType("Session");
     };
 
     const playAudio = () => {
         audioSound.loop = true;
         audioSound.current.play();
-        setTimeout(()=>stopAudioPlaying(), 3500);
+        setTimeout(()=>stopAudioPlaying(), 3200);
     }
 
     const stopAudioPlaying = () => {
         audioSound.current.pause();
+        audioSound.current.currentTime = 0;
     }
 
     const handlerPlayButtonClick = () => {
@@ -82,44 +76,26 @@ export default function Timer() {
     };
 
     const incrementBreak = () => {
-        if(breakLength < 60){
-            // console.log('incrementBreak   ');
-            setBreakLength(breakLength + 1);
-        } else {
-            // console.log('incrementBreak   >= 60');
-            return false
-        };
+        if(breakLength < 60) setBreakLength(breakLength + 1);
     }
 
     const decrementBreak = () => {
-        if(breakLength > 1 ){
-            // console.log('decrementBreak   ');
-            setBreakLength(breakLength - 1);
-        } else {
-            // console.log('decrementBreak ', breakLength);
-            return false
-        };   
+        if(breakLength > 1 ) setBreakLength(breakLength - 1);  
     }
 
     const incrementSession = () => {
         if(sessionLength < 60 && seconds < 3600){
             setSessionLength(sessionLength + 1);
-            // setSeconds(seconds + 60);
             setSeconds(getSeconds(sessionLength) + 60);
-        } else {
-            return false
-        };
+        } 
     }
     const decrementSession = () => {
         if(sessionLength > 1 && seconds > 119){
             setSessionLength(sessionLength - 1);
-            // setSeconds(seconds - 60);
             setSeconds(getSeconds(sessionLength) - 60);
-        } else if (sessionLength > 1 && seconds < 119){
+        } else if (sessionLength > 1 && seconds < 119)
             setSessionLength(sessionLength - 1);
-        } else {
-            return false
-        };  
+
     }
 
  
@@ -150,11 +126,14 @@ export default function Timer() {
                     />
                 </div>
                 <div className="timer">
-                    <div id="timer-label"> Session </div>
+                    <div id="timer-label"> {timerType} </div>
                     <DisplayTimer seconds={seconds} />
 
                     <audio id="beep" preload="auto" ref={audioSound}>
-                        <source src={beep} type="audio/wav"/>
+                        <source 
+                            src="https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav" 
+                            type="audio/wav"
+                        />
                     </audio>
 
                 </div>
@@ -169,6 +148,7 @@ export default function Timer() {
                         ) : (
                             <FaPause className="icon-style" />
                         )}
+
                     </button>
 
                     <button
@@ -176,10 +156,7 @@ export default function Timer() {
                         className="button-with-icon"
                         onClick={resetTimer}
                     >
-                        <TbRefresh
-                            id="reset-animation"
-                            className="icon-style"
-                        />
+                        <TbRefresh id="reset-animation" className="icon-style"/>
                     </button>
                 </div>
             </div>
