@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');
 * {
     margin: 0;
     padding: 0;
@@ -14,22 +15,16 @@
     box-sizing: border-box;
 }
 :root {
-    --timer-bg-color: rgb(49, 51, 82);
-    --outside-border: 2px solid var(--purple);
-    --inside-border: 2px solid var(--hotpink);
-    --display-border: 6px solid var(--hotpurple);
-    --font-color: #aaa;
+    --outside-border: 2px solid var(--color-secondary-dark);
+    --inside-border: 2px solid var(--color-primary-dark);
+    --display-border: 6px solid var(--color-secondary-light);
 
-    --hotpink: #ff69b4;
-    --yellow: #ffe94e;
-    --hotpurple: #d72df7;
-    --purple: #5016f1;
-    --amazing-colors: linear-gradient(
-        217deg,
-        var(--yellow),
-        var(--hotpurple),
-        var(--purple)
-    );
+    --timer-bg-color: #012442;
+    --font-color: #aaa;
+    --color-primary-dark: #E38664;
+    --color-primary-light: #FFA566;
+    --color-secondary-light: #7E627B;
+    --color-secondary-dark: #5BA0BF;
 
     --conteiner-widht-lg: 75%;
     --conteiner-widht-md: 86%;
@@ -55,6 +50,17 @@
     text-align: center;
     align-items: stretch;
 }
+.timer-control-panel h2{
+    background: -webkit-linear-gradient(
+        90deg, 
+        var(--color-primary-light),
+        var(--color-secondary-light),
+        var(--color-secondary-dark)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
 
 /* =========Control panel ========= */
 
@@ -68,7 +74,10 @@
 .control-bar {
     width: 20rem;
     padding: 1rem;
+    font-size: 32px;
+    color: var(--font-color);
 }
+
 .grid-control-bar {
     display: grid;
     grid-template-columns: 20% 60% 20%;
@@ -77,25 +86,54 @@
     padding: 1rem;
     margin-top: 1rem;
 }
-
+.grid-control-bar-style{
+    font-size: 40px;
+    
+} 
 /* ======= Buttons ======== */
 .button-with-icon {
     width: 6rem;
     background: var(--timer-bg-color);
     cursor: pointer;
 }
-.icon-style {
+.timer-icon-style,
+.timer-pause-icon,
+.timer-play-icon{
     width: 2.5rem;
     height: 2.5rem;
+}
+.timer-icon-style {
     color: var(--font-color);
 }
+.timer-icon-style:hover{
+    color: var(--color-primary-light);
+}
 
+.timer-pause-icon{
+    color: var(--color-primary-light);
+}
+
+.timer-play-icon{
+    color: var(--color-primary-dark);
+}
 /* ======= Display Timer ======== */
 
 #timer-label,
 #time-left {
     margin: 1rem auto;
 }
+#timer-label {
+    background: -webkit-linear-gradient(
+        90deg, 
+        var(--color-primary-light),
+        var(--color-secondary-light)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
 #time-left {
     border: var(--display-border);
     padding: 1.5rem;

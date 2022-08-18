@@ -141,9 +141,9 @@ export default function Timer() {
                         onClick={handlerPlayButtonClick}
                     >
                         {!playIsPressed ? (
-                            <FaPlay className="icon-style" />
+                            <FaPlay className="timer-play-icon" />
                         ) : (
-                            <FaPause className="icon-style" />
+                            <FaPause className="timer-play-icon" />
                         )}
                     </button>
 
@@ -154,7 +154,7 @@ export default function Timer() {
                     >
                         <TbRefresh
                             id="reset-animation"
-                            className="icon-style"
+                            className="timer-play-icon"
                         />
                     </button>
                 </div>
